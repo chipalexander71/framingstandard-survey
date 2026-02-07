@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/survey/(.*)", "destination": "/survey/index.html" },
+    { "source": "/survey", "destination": "/survey/index.html" }
+  ],
+  "redirects": [
+    { "source": "/", "destination": "/survey", "statusCode": 302 }
+  ]
+}
