@@ -76,8 +76,12 @@ const SECTIONS = [
         label: "Tell us about your non-industry purchasing. What do you buy and where?",
         placeholder: "e.g., I buy plexiglass from a local plastics company because it's cheaper than CMI. I get spray adhesive and sandpaper from Home Depot. I buy unfinished wood moulding from a local lumber yard for custom staining...",
         conditional: { field: "non_industry_purchases", value: "yes" } },
-      { id: "supplier_ordering", type: "select", label: "How do you typically place orders with your primary suppliers?",
-        options: ["Phone/fax", "Supplier's website/portal", "Through POS software", "Sales rep visit", "Mix of methods"] },
+      { id: "supplier_ordering", type: "multi", label: "How do you typically place orders with your primary suppliers? (select all that apply)",
+        options: ["Phone/fax", "Supplier's website/portal", "Through POS software", "Sales rep visit"] },
+      { id: "supplier_ordering_detail", type: "textarea",
+        label: "You use more than one method — tell us how your ordering process works across these channels.",
+        placeholder: "e.g., I order moulding through Larson-Juhl's website but call my local matboard supplier because they don't have an online portal...",
+        conditional: { field: "supplier_ordering", minLength: 2 } },
       { id: "supplier_pain", type: "textarea", label: "What's your biggest frustration with ordering supplies?",
         placeholder: "e.g., Pricing is never up to date, I can't tell what's in stock, delivery times are unpredictable..." },
       { id: "price_comparison", type: "yesno", label: "Do you actively compare prices between suppliers for the same or equivalent materials?" },
@@ -212,6 +216,10 @@ export default function Survey() {
 
   const shouldShow = (q) => {
     if (!q.conditional) return true;
+    if (q.conditional.minLength) {
+      const val = answers[q.conditional.field];
+      return Array.isArray(val) && val.length >= q.conditional.minLength;
+    }
     return answers[q.conditional.field] === q.conditional.value;
   };
 
