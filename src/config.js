@@ -10,7 +10,7 @@
 export const FORMSPREE_ID = 'xnjbqbjv';
 
 // Your contact email (shown on the survey page)
-export const CONTACT_EMAIL = 'survey@framingstandard.org';
+export const CONTACT_EMAIL = 'info@framingstandard.org';
 
 // Site branding
 export const SITE_NAME = 'FramingStandard.org';
