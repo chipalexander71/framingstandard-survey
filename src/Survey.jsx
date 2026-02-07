@@ -57,6 +57,10 @@ const SECTIONS = [
       { id: "mat_cutter_computerized", type: "yesno", label: "Do you have a computerized mat cutter?" },
       { id: "online_presence", type: "multi", label: "Where do you have an online presence?",
         options: ["Website", "Facebook", "Instagram", "Google Business Profile", "Etsy", "Shopify/e-commerce store", "None", "Other"] },
+      { id: "online_presence_other", type: "text",
+        label: "You selected 'Other' — where else do you have an online presence?",
+        placeholder: "e.g., TikTok, Pinterest, Nextdoor, custom app...",
+        conditional: { field: "online_presence", includes: "Other" } },
     ]
   },
   {
@@ -67,10 +71,22 @@ const SECTIONS = [
     questions: [
       { id: "primary_moulding", type: "multi", label: "Which moulding suppliers do you use? (select all)",
         options: ["Larson-Juhl", "Roma Moulding", "Nielsen Bainbridge", "Bella Moulding", "CMI (Columbia)", "Don Mar", "Fotiou", "Omega Moulding", "Other/Local"] },
+      { id: "primary_moulding_other", type: "text",
+        label: "You selected 'Other/Local' — which other moulding suppliers do you use?",
+        placeholder: "e.g., local lumber yard, regional distributor name...",
+        conditional: { field: "primary_moulding", includes: "Other/Local" } },
       { id: "primary_matboard", type: "multi", label: "Which matboard suppliers do you use?",
         options: ["Crescent (part of Larson-Juhl)", "Bainbridge/Artcare", "Tru Vue (glazing + mat)", "Rising Museum Board", "Other/Local"] },
+      { id: "primary_matboard_other", type: "text",
+        label: "You selected 'Other/Local' — which other matboard suppliers do you use?",
+        placeholder: "e.g., local art supply store, regional distributor...",
+        conditional: { field: "primary_matboard", includes: "Other/Local" } },
       { id: "primary_glazing", type: "multi", label: "Which glazing suppliers do you use?",
         options: ["Tru Vue", "Larson-Juhl", "CMI", "Local plastics supplier", "Other"] },
+      { id: "primary_glazing_other", type: "text",
+        label: "You selected 'Other' — which other glazing suppliers do you use?",
+        placeholder: "e.g., TAP Plastics, local glass shop...",
+        conditional: { field: "primary_glazing", includes: "Other" } },
       { id: "non_industry_purchases", type: "yesno", label: "Do you regularly buy supplies from NON-framing-industry vendors (hardware stores, plastics suppliers, paint stores, etc.)?" },
       { id: "non_industry_details", type: "textarea",
         label: "Tell us about your non-industry purchasing. What do you buy and where?",
@@ -106,12 +122,20 @@ const SECTIONS = [
         conditional: { field: "pricing_method", minLength: 2 } },
       { id: "pricing_detail", type: "textarea", label: "Any details about how you handle pricing? Markup rules, discounts, etc.?",
         placeholder: "e.g., We use 3x markup on moulding, 4x on matboard, flat rate for fitting..." },
-      { id: "work_order_method", type: "select", label: "How do you track work orders / jobs in progress?",
+      { id: "work_order_method", type: "multi", label: "How do you track work orders / jobs in progress? (select all that apply)",
         options: ["POS software", "Paper tickets/tags", "Whiteboard", "Spreadsheet", "Sticky notes / memory", "Other"] },
+      { id: "work_order_method_other", type: "textarea",
+        label: "You selected 'Other' — tell us how you track work orders.",
+        placeholder: "e.g., I use a custom Access database, a shared Google Doc, a Trello board...",
+        conditional: { field: "work_order_method", includes: "Other" } },
       { id: "production_steps", type: "textarea", label: "What are the steps to build a typical framed piece in your shop?",
         placeholder: "Walk us through it: pulling materials, cutting, joining, matting, mounting, glazing, fitting, finishing..." },
-      { id: "customer_notification", type: "select", label: "How do you notify customers when their order is ready?",
-        options: ["Phone call", "Text message", "Email", "Automated from POS", "They just check back", "Mix of methods"] },
+      { id: "customer_notification", type: "multi", label: "How do you notify customers when their order is ready? (select all that apply)",
+        options: ["Phone call", "Text message", "Email", "Automated from POS", "They just check back"] },
+      { id: "customer_notification_detail", type: "textarea",
+        label: "You use more than one notification method — tell us how you decide which to use.",
+        placeholder: "e.g., I text regulars but call older customers who don't text. POS sends an auto-email but I follow up by phone if they don't pick up within a week...",
+        conditional: { field: "customer_notification", minLength: 2 } },
       { id: "workarounds", type: "textarea", label: "Where do you use sticky notes, notebooks, or memory to track things your software can't handle?",
         placeholder: "This is gold for us — every workaround reveals something the software should do but doesn't." },
     ]
@@ -223,6 +247,10 @@ export default function Survey() {
     if (q.conditional.minLength) {
       const val = answers[q.conditional.field];
       return Array.isArray(val) && val.length >= q.conditional.minLength;
+    }
+    if (q.conditional.includes) {
+      const val = answers[q.conditional.field];
+      return Array.isArray(val) && val.includes(q.conditional.includes);
     }
     return answers[q.conditional.field] === q.conditional.value;
   };
