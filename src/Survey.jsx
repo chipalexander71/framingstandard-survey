@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { FORMSPREE_ID, CONTACT_EMAIL, SITE_NAME } from './config.js';
+import { SUPABASE_URL, SUPABASE_ANON_KEY, CONTACT_EMAIL, SITE_NAME } from './config.js';
 
 const SECTIONS = [
   {
@@ -267,32 +267,29 @@ export default function Survey() {
     setSubmitting(true);
     setSubmitError(null);
 
-    const payload = {
-      _subject: `New Survey Response: ${answers.shop_name || 'Anonymous'}`,
+    const row = {
       submitted_at: new Date().toISOString(),
       survey_version: "1.0",
-      // Flatten multi-select arrays to strings for Formspree compatibility
-      ...Object.fromEntries(
-        Object.entries(answers).map(([k, v]) =>
-          [k, Array.isArray(v) ? v.join('; ') : v]
-        )
-      ),
-      // Also include raw JSON for complete data fidelity
-      _raw_json: JSON.stringify(answers),
+      shop_name: answers.shop_name || null,
+      contact_name: answers.contact_name || null,
+      contact_email: answers.contact_email || null,
+      raw_json: answers,
     };
 
     try {
-      // Submit to Formspree
-      if (FORMSPREE_ID && FORMSPREE_ID !== '__YOUR_FORMSPREE_ID__') {
-        const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-        if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
-          throw new Error(data.error || `Submission failed (${res.status})`);
-        }
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/survey_responses`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Prefer': 'return=minimal',
+        },
+        body: JSON.stringify(row),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || `Submission failed (${res.status})`);
       }
       setSubmitted(true);
     } catch (err) {

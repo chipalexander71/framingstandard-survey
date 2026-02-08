@@ -2,12 +2,9 @@
 // CONFIGURATION - Update these values before deploying
 // ============================================================
 
-// Formspree form ID - get yours at https://formspree.io
-// 1. Sign up for a free account at formspree.io
-// 2. Create a new form 
-// 3. Copy the form ID (looks like: xyzabcde)
-// 4. Paste it below
-export const FORMSPREE_ID = 'xnjbqbjv';
+// Supabase project settings
+export const SUPABASE_URL = 'https://nsacoshqwipnzwhofnpo.supabase.co';
+export const SUPABASE_ANON_KEY = 'sb_publishable_hDpZkPzY_-qHiNNWON6UNQ_2ueOqSxe';
 
 // Your contact email (shown on the survey page)
 export const CONTACT_EMAIL = 'info@framingstandard.org';
