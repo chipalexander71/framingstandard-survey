@@ -35,6 +35,15 @@ const SECTIONS = [
         placeholder: "e.g., We specialize in museum-quality conservation framing for watercolors and works on paper..." },
       { id: "pct_custom", type: "select", label: "What percentage of your revenue comes from custom framing?",
         options: ["Under 25%", "25–50%", "50–75%", "Over 75%", "Nearly 100%"] },
+      { id: "offers_delivery", type: "select", label: "Does your shop offer delivery to customers?",
+        options: ["Yes — we deliver regularly (weekly or more)", "Yes — occasionally (a few times a month)", "Rarely — only for special requests", "No — customers always pick up"] },
+      { id: "offers_installation", type: "select", label: "Does your shop offer on-site installation or hanging services?",
+        options: ["Yes — it's a significant part of our business", "Yes — occasionally when requested", "No — delivery only, no installation", "No — we don't deliver or install"] },
+      { id: "delivery_install_pct", type: "select", label: "Roughly what percentage of your orders involve delivery or installation?",
+        options: ["Less than 10%", "10–25%", "25–50%", "More than 50%"],
+        conditional: { field: "offers_delivery", notValue: "No — customers always pick up" } },
+      { id: "delivery_insurance", type: "yesno", label: "Do you carry insurance that specifically covers delivery and/or on-site installation work?",
+        conditional: { field: "offers_delivery", notValue: "No — customers always pick up" } },
     ]
   },
   {
@@ -130,6 +139,16 @@ const SECTIONS = [
         conditional: { field: "work_order_method", includes: "Other" } },
       { id: "production_steps", type: "textarea", label: "What are the steps to build a typical framed piece in your shop?",
         placeholder: "Walk us through it: pulling materials, cutting, joining, matting, mounting, glazing, fitting, finishing..." },
+      { id: "delivery_tracking", type: "multi", label: "If you offer delivery or installation, how do you currently track it?",
+        options: ["Part of the work order in our POS", "Separate notebook or clipboard", "Spreadsheet or calendar", "Just remember / wing it", "We don't track it", "N/A — we don't deliver or install"] },
+      { id: "delivery_challenges", type: "textarea",
+        label: "What's the hardest part about managing delivery and installation jobs?",
+        placeholder: "e.g., tracking costs, scheduling, knowing if we actually made money on the job...",
+        conditional: { field: "delivery_tracking", excludes: "N/A — we don't deliver or install" } },
+      { id: "delivery_costs_tracked", type: "select",
+        label: "Do you track the actual costs of delivery/installation (vehicle, hardware, labor time)?",
+        options: ["Yes — we track it closely", "Somewhat — we have a rough idea", "No — we just charge a flat fee and hope it covers it", "No — we usually absorb the cost", "N/A"],
+        conditional: { field: "delivery_tracking", excludes: "N/A — we don't deliver or install" } },
       { id: "customer_notification", type: "multi", label: "How do you notify customers when their order is ready? (select all that apply)",
         options: ["Phone call", "Text message", "Email", "Automated from POS", "They just check back"] },
       { id: "customer_notification_detail", type: "textarea",
@@ -150,7 +169,7 @@ const SECTIONS = [
         options: ["Pricing accuracy", "Inventory tracking", "Supplier ordering/communication", "Finding/comparing local suppliers",
           "Work order management", "Customer communication", "Online sales integration", "Visualizing designs for customers",
           "Employee training on software", "Reporting and business insights", "Cost of current software",
-          "Keeping up with technology", "Competition from online framers"] },
+          "Keeping up with technology", "Competition from online framers", "Tracking delivery and installation costs and scheduling"] },
       { id: "must_have", type: "textarea", label: "If you could wave a magic wand and have ONE feature in your shop software, what would it be?",
         placeholder: "Dream big — what would change your daily life?" },
       { id: "would_switch", type: "yesno", label: "Would you consider switching to a free, open-source POS if it met your needs?" },
@@ -252,6 +271,13 @@ export default function Survey() {
       const val = answers[q.conditional.field];
       return Array.isArray(val) && val.includes(q.conditional.includes);
     }
+    if (q.conditional.excludes) {
+      const val = answers[q.conditional.field];
+      return Array.isArray(val) && val.length > 0 && !val.includes(q.conditional.excludes);
+    }
+    if (q.conditional.notValue) {
+      return answers[q.conditional.field] != null && answers[q.conditional.field] !== q.conditional.notValue;
+    }
     return answers[q.conditional.field] === q.conditional.value;
   };
 
@@ -269,7 +295,7 @@ export default function Survey() {
 
     const row = {
       submitted_at: new Date().toISOString(),
-      survey_version: "1.0",
+      survey_version: "1.1",
       shop_name: answers.shop_name || null,
       contact_name: answers.contact_name || null,
       contact_email: answers.contact_email || null,
@@ -302,7 +328,7 @@ export default function Survey() {
 
   const downloadJSON = () => {
     const ts = new Date().toISOString();
-    const output = { submitted_at: ts, version: "1.0", responses: answers };
+    const output = { submitted_at: ts, version: "1.1", responses: answers };
     const blob = new Blob([JSON.stringify(output, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
