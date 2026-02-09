@@ -515,6 +515,11 @@
           <h3>The Invisible Spend</h3>
           <p>Frame shops buy plexiglass from plastics suppliers, adhesive from hardware stores, wood from lumber yards — and no POS accounts for this.</p>
         </div>
+        <div class="problem-card reveal">
+          <span class="icon">🚚</span>
+          <h3>Delivery &amp; Installation? Good Luck.</h3>
+          <p>Many shops deliver and install — renting trucks, buying hardware, spending hours on-site. No POS tracks the cost, the logistics, or whether you actually made money on the job.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -575,22 +580,16 @@
     <p class="footer-tagline">An open platform for the picture framing industry.</p>
     <div class="footer-links">
       <a href="/survey">Survey</a>
-      <a href="mailto:info@framingstandard.org">Contact</a>
+      <a href="/cdn-cgi/l/email-protection#80e9eee6efc0e6f2e1ede9eee7f3f4e1eee4e1f2e4aeeff2e7">Contact</a>
     </div>
   </footer>
 
   <!-- Scroll reveal -->
-  <script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
         }
       });
-    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-  </script>
-
-</body>
-</html>
+    }, { thresh
