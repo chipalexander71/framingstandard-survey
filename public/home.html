@@ -515,6 +515,11 @@
           <h3>The Invisible Spend</h3>
           <p>Frame shops buy plexiglass from plastics suppliers, adhesive from hardware stores, wood from lumber yards — and no POS accounts for this.</p>
         </div>
+        <div class="problem-card reveal">
+          <span class="icon">🚚</span>
+          <h3>Delivery &amp; Installation? Good Luck.</h3>
+          <p>Many shops deliver and install — renting trucks, buying hardware, spending hours on-site. No POS tracks the cost, the logistics, or whether you actually made money on the job.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -587,7 +592,7 @@
           entry.target.classList.add('visible');
         }
       });
-    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    }, { threshold: 0.15 });
 
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
   </script>
